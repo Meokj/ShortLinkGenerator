@@ -13,3 +13,5 @@
 
 ## 安全提醒
 API 密钥会保存在本机 `%APPDATA%\\ShortLinkGenerator\\profiles.json` 中，请勿分享含真实密钥的配置文件，请仅配置可信的 API 地址。
+
+![运行界面](picture.png)
