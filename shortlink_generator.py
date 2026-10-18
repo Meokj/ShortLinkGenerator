@@ -527,28 +527,55 @@ class App(tk.Tk):
         name = simpledialog.askstring("新建配置", "请输入配置名称：", parent=self)
         if not name:
             return
+        name = name.strip()
+        
+        # 【新增逻辑】检查配置名是否已存在
+        if any(p.get("name") == name for p in self.profiles):
+            messagebox.showwarning("创建失败", f"配置名称“{name}”已存在，请使用其他名称或直接修改该配置。")
+            return
+
         p = DEFAULT_PROFILE.copy()
-        p["name"] = name.strip()
+        p["name"] = name
         self.profiles.append(p)
         self._refresh_profile_combo(len(self.profiles) - 1)
         self._load_profile_into_form(len(self.profiles) - 1)
         self._save_profiles_file()
+        self.status_var.set(f"已创建新配置：{name}")
 
     def _save_profile(self):
-        idx = self.profile_combo.current()
         try:
             p = self._form_profile()
         except ValueError:
             messagebox.showerror("配置错误", "超时秒数必须是数字。")
             return
-        if idx < 0:
-            self.profiles.append(p)
-            idx = len(self.profiles) - 1
+
+        current_name = p["name"]
+        
+        # 查找当前配置名是否已存在于列表中
+        target_idx = -1
+        combo_idx = self.profile_combo.current()
+        
+        if 0 <= combo_idx < len(self.profiles):
+            if self.profiles[combo_idx].get("name") == current_name:
+                target_idx = combo_idx
+                
+        if target_idx == -1:
+            for i, prof in enumerate(self.profiles):
+                if prof.get("name") == current_name:
+                    target_idx = i
+                    break
+
+        if target_idx >= 0:
+            # 如果名字相同，则更新已有配置
+            self.profiles[target_idx] = p
+            idx_to_refresh = target_idx
         else:
-            p["name"] = self.profile_var.get().strip() or p["name"]
-            self.profiles[idx] = p
+            # 如果不存在，则追加保存
+            self.profiles.append(p)
+            idx_to_refresh = len(self.profiles) - 1
+
         self._save_profiles_file()
-        self._refresh_profile_combo(idx)
+        self._refresh_profile_combo(idx_to_refresh)
         self.status_var.set("API 配置已保存")
         messagebox.showinfo("保存成功", "API 配置已保存。")
 
