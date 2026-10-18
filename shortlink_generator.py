@@ -68,7 +68,7 @@ DEFAULT_PROFILE = {
     "method": "POST",
     "content_type": "application/json",
     "headers": [
-        {"key": "User_Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"},
+        {"key": "User-Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"},
         {"key": "Authorization", "value": "Bearer YOUR_API_KEY"}
     ],
     "body": '{\n  "url": "{{longUrl}}",\n  "ttl": "60"\n}',
@@ -192,7 +192,7 @@ class App(tk.Tk):
         self.long_url_text = tk.Text(input_box, height=4, wrap="word", font=("Microsoft YaHei UI", 10),
                                      relief="solid", bd=1, padx=7, pady=6)
         self.long_url_text.pack(fill="x")
-        self.long_url_text.insert("1.0", "https://www.baidu.com")
+        self.long_url_text.insert("1.0", "https://github.com")
         self.generate_btn = ttk.Button(input_box, text="🔗 生成短链接", style="Accent.TButton",
                                        command=self._generate)
         self.generate_btn.pack(fill="x", pady=(9, 0))
